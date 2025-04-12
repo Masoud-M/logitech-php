@@ -2,10 +2,9 @@
 $price = (float) $productData["price"];
 $discount = (float) $productData["discount"];
 
-if ($price > 0) {
+if ($price > 0):
     $newPrice = $price - $discount;
     $discountPercentage = number_format(($discount / $price) * 100, 2);
-
-
-    echo ("<span class='on-sale'>$discountPercentage% OFF</span>");
-}
+?>
+    <span class='on-sale'><?= $discountPercentage ?>% OFF</span>
+<?php endif; ?>
