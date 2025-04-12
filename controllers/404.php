@@ -1,3 +1,1 @@
-<section>
-    <div class="not-found content">OOPS, page not found :)</div>
-</section>
+<?php require "views/templates/404.templates.php";
