@@ -3,7 +3,7 @@ name: Deploy PHP Application
 on:
   push:
     branches:
-      - main # Or 'master', or any branch you want to trigger deployment from
+      - main # Adjust this to your primary branch, e.g., 'master' or 'dev'
 
 jobs:
   deploy:
@@ -11,33 +11,29 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4 # Action to check out your repository code
+        uses: actions/checkout@v4 # Action to check out your repository code onto the runner
 
       - name: Set up SSH connection
-        uses: webfactory/ssh-agent@v0.9.0 # Action to add your SSH private key to the runner's SSH agent
+        uses: webfactory/ssh-agent@v0.9.0 # Action to load your SSH private key for secure connection
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }} # Use the secret you stored in GitHub
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }} # Uses the secret you stored in GitHub
 
       - name: Deploy to VPS
         run: |
           SSH_HOST=${{ secrets.VPS_HOST }}
           SSH_USER=${{ secrets.VPS_USER }}
-          # Define your project directory on the VPS
-          DEPLOY_DIR="/var/www/html/logitech-php" # <-- IMPORTANT: Customize this path on your VPS
+          DEPLOY_DIR="/var/www/html/logitech-php" # This is where your project's root will be
 
           echo "Connecting to $SSH_USER@$SSH_HOST"
-          # Execute commands on the VPS via SSH
-          # Using `exec ssh` can be more robust for some SSH commands
-          # And we'll pass DEPLOY_DIR directly as an argument
           ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" "
-            # Ensure the deployment directory exists on the VPS
             mkdir -p ${DEPLOY_DIR}
 
             # Navigate into the deployment directory
+            # The '||' handles if cd fails, but after mkdir -p, it should exist.
             cd ${DEPLOY_DIR} || { echo 'Failed to change directory to ${DEPLOY_DIR}'; exit 1; }
 
             # Pull the latest code changes from GitHub
-            if [ -d \".git\" ]; then # Escaping quotes for .git
+            if [ -d \".git\" ]; then
               echo \"Pulling latest changes...\"
               git pull origin main # Adjust 'main' to your branch name if different
             else
@@ -47,8 +43,12 @@ jobs:
             fi
 
             echo \"Building and restarting Docker containers...\"
+            # --- FINAL CORRECTION HERE ---
+            # Files are in the root, so no -f PATH is needed.
             docker-compose down
             docker-compose build --no-cache
             docker-compose up -d --force-recreate
+            # --------------------------
+
             echo \"Deployment complete.\"
           "
