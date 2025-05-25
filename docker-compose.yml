@@ -1,0 +1,14 @@
+version: '3.8' 
+
+services:
+  
+  app:
+    build:
+      context: . 
+      dockerfile: Dockerfile 
+    image: logitech-clone-php:latest 
+    container_name: logitech_clone_php_container 
+    ports:
+      - "80:80" 
+    restart: always
+    

@@ -1,0 +1,9 @@
+.git
+.github/
+.env
+node_modules/
+vendor/
+.vscode/
+*.log
+tmp/
+cache/
