@@ -20,44 +20,35 @@ jobs:
 
       - name: Deploy to VPS
         run: |
-          # Add your VPS IP address and username from GitHub Secrets
           SSH_HOST=${{ secrets.VPS_HOST }}
           SSH_USER=${{ secrets.VPS_USER }}
-
           # Define your project directory on the VPS
-          # This is where your application code will reside and Docker will be built
-          # Make sure this directory exists on your VPS, e.g., /var/www/your-app-name
-          # You can create it manually if it doesn't exist: sudo mkdir -p /var/www/your-app-name && sudo chown deployuser:deployuser /var/www/your-app-name
           DEPLOY_DIR="/var/www/html/logitech-php" # <-- IMPORTANT: Customize this path on your VPS
 
           echo "Connecting to $SSH_USER@$SSH_HOST"
           # Execute commands on the VPS via SSH
-          ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" << 'EOF'
+          # Using `exec ssh` can be more robust for some SSH commands
+          # And we'll pass DEPLOY_DIR directly as an argument
+          ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" "
             # Ensure the deployment directory exists on the VPS
-            mkdir -p "${DEPLOY_DIR}"
+            mkdir -p ${DEPLOY_DIR}
 
             # Navigate into the deployment directory
-            cd "${DEPLOY_DIR}" || exit 1 # Exit if cd fails
+            cd ${DEPLOY_DIR} || { echo 'Failed to change directory to ${DEPLOY_DIR}'; exit 1; }
 
             # Pull the latest code changes from GitHub
-            # Ensure you have git installed on your VPS and this directory is a git repo
-            # For simplicity, we'll clone if not exists, else pull.
-            # NOTE: If your repository is private, the deployuser needs SSH access to GitHub,
-            # or you clone with a token. For now, let's assume it's public or we'll adjust.
-            if [ -d ".git" ]; then
-              echo "Pulling latest changes..."
+            if [ -d \".git\" ]; then # Escaping quotes for .git
+              echo \"Pulling latest changes...\"
               git pull origin main # Adjust 'main' to your branch name if different
             else
-              echo "Cloning repository..."
-              git clone https://github.com/Masoud-M/logitech-php.git . # <-- IMPORTANT: Replace with your actual GitHub repo URL (e.g., git@github.com:youruser/yourrepo.git for SSH, or https://github.com/youruser/yourrepo.git)
+              echo \"Cloning repository...\"
+              git clone https://github.com/Masoud-M/logitech-php . # HTTPS URL for public repo
               git checkout main # Adjust 'main' to your branch name if different
             fi
 
-            echo "Building and restarting Docker containers..."
-            # Build the Docker image and restart containers using docker-compose
-            # '-f docker-compose.yml' is often not needed if in the same directory
-            docker-compose down # Stop and remove existing containers
-            docker-compose build --no-cache # Build with no cache to ensure latest code is used
-            docker-compose up -d --force-recreate # Start containers, recreate to pick up new image
-            echo "Deployment complete."
-          EOF
+            echo \"Building and restarting Docker containers...\"
+            docker-compose down
+            docker-compose build --no-cache
+            docker-compose up -d --force-recreate
+            echo \"Deployment complete.\"
+          "
