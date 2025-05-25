@@ -1,9 +1,6 @@
 <?php include("views/partials/head.php"); ?>
 <section class="container" aria-label="best selling products">
-    <?php
-    $productsJson = file_get_contents("models/products.json");
-    $productsData = json_decode($productsJson, true);
-    ?>
+
 
     <?php if (isset($productsData)): ?>
         <ul class='products-list'>

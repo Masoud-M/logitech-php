@@ -1,1 +1,3 @@
-<?php require "views/templates/404.templates.php";
+<?php
+
+include("views/templates/404.php");

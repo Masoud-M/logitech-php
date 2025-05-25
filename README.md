@@ -1,0 +1,4 @@
+- conditionally display the color options for products
+- a better 404 page with link back to home page
+- dynamic pages for products
+- navbar

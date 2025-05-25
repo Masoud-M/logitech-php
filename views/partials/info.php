@@ -10,8 +10,8 @@
         <p aria-label='Product category' class='category'><?= $series ?></p>
     <?php endif; ?>
 
-    <a class='product-link' href='/products/<?= $_id ?>/<?= $slug_title ?>'>
-        <h1 aria-label='link to the product' class='title' id='<?= $_id ?>'>
+    <a class='product-link' href='product?id=<?= $id ?>'>
+        <h1 aria-label='link to the product' class='title'>
             <?= $name ?>
         </h1>
     </a>

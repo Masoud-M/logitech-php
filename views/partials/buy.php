@@ -1,5 +1,4 @@
 <?php
-$_id = $productData["_id"];
-$slug_title = $productData["slug_title"];
+$id = $productData["_id"];
 ?>
-<a class='buy' href='/products/<?= $_id ?>/<?= $slug_title ?>'>BUY</a>
+<a class='buy' href='/product?id=<?= $id ?> ?>'>BUY</a>

@@ -8,7 +8,7 @@
         $id = $productData['_id'];
         $slug = $productData['slug_title'];
         ?>
-        <a href='/products/<?= $id ?>/<?= $slug ?>'>
+        <a href='product?id=<?= $id ?>'>
             <img aria-hidden='true'
                 width='224'
                 src='<?= $productData["thumbnail_url"] ?>'
