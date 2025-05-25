@@ -29,10 +29,13 @@ jobs:
             mkdir -p ${DEPLOY_DIR}
 
             # Navigate into the deployment directory
-            # The '||' handles if cd fails, but after mkdir -p, it should exist.
             cd ${DEPLOY_DIR} || { echo 'Failed to change directory to ${DEPLOY_DIR}'; exit 1; }
 
-            # Pull the latest code changes from GitHub
+            echo '--- DIAGNOSTIC: Current working directory on VPS BEFORE Git pull ---'
+            pwd
+            echo '--- DIAGNOSTIC: Files in current directory BEFORE Git pull ---'
+            ls -la
+
             if [ -d \".git\" ]; then
               echo \"Pulling latest changes...\"
               git pull origin main # Adjust 'main' to your branch name if different
@@ -42,13 +45,17 @@ jobs:
               git checkout main # Adjust 'main' to your branch name if different
             fi
 
+            echo '--- DIAGNOSTIC: Current working directory on VPS AFTER Git pull ---'
+            pwd
+            echo '--- DIAGNOSTIC: Files in current directory AFTER Git pull ---'
+            ls -la src/ # Check contents of src/ too
+            ls -la docker/ # Check contents of docker/ too, just in case
+            ls -la Dockerfile
+            ls -la docker-compose.yml
+
             echo \"Building and restarting Docker containers...\"
-            # --- FINAL CORRECTION HERE ---
-            # Files are in the root, so no -f PATH is needed.
             docker-compose down
             docker-compose build --no-cache
             docker-compose up -d --force-recreate
-            # --------------------------
-
             echo \"Deployment complete.\"
           "
