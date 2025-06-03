@@ -6,7 +6,6 @@ if (isset($colors)): ?>
     <ul class="options" aria-label="Color options">
         <?php foreach ($colors as $color): ?>
             <input
-                id="<?= $_id ?>"
                 aria-label="<?= $color ?>"
                 class="<?= $color ?>"
                 type="radio"
