@@ -10,23 +10,21 @@ if ($price > 0):
     <div class="details">
 
         <?php if (!empty($productData['series'])): ?>
-            <a class="category-link" href="/">
-                <h2>
-                    <?= htmlspecialchars($productData['series']) ?>
-                </h2>
-            </a>
+            <h2 class="category-link">
+                <?= $productData['series'] ?>
+            </h2>
         <?php endif; ?>
 
         <h1>
-            <?= htmlspecialchars($productData['name']) ?>
+            <?= $productData['name'] ?>
         </h1>
 
-        <p><?= htmlspecialchars($productData['description']) ?></p>
+        <p><?= $productData['description'] ?></p>
 
         <div class="reviews">
-            <div class="stars" style="--rating: <?= htmlspecialchars($productData['rating']) ?>;" aria-label="Rating of this product is <?= htmlspecialchars($productData['rating']) ?> out of 5."></div>
+            <div class="stars" style="--rating: <?= $productData['rating'] ?>;" aria-label="Rating of this product is <?= htmlspecialchars($productData['rating']) ?> out of 5."></div>
             <a href="/">
-                <?= htmlspecialchars($productData['reviews']) ?> Review<?= $productData['reviews'] > 1 ? 's' : '' ?>
+                <?= $productData['reviews'] ?> Review<?= $productData['reviews'] > 1 ? 's' : '' ?>
             </a>
         </div>
 
