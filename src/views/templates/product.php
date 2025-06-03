@@ -28,7 +28,9 @@ include("views/partials/head.php");
                     <?php include("views/partials/product-info.php"); ?>
                 </div>
 
-                <?php include("views/partials/colors.php"); ?>
+                <?php if (!empty($productData["colors"])) {
+                    include("views/partials/colors.php");
+                } ?>
 
                 <button class="add-to-cart-btn">ADD TO CART</button>
             </div>
